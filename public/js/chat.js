@@ -101,9 +101,28 @@ $sendLocationButton.addEventListener("click",()=>{
     })
 })
 
+
+
 socket.emit("join", {username, room}, (error)=>{
     if(error){
         alert(error)
         location.href = "/"
     }
 })
+
+
+let typingTimeout;
+
+const sendTypingNotification = () => {
+    socket.emit('typing');
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+        socket.emit('stopTyping');
+    }, 500); 
+};
+
+input.addEventListener('input', () => {
+    sendTypingNotification();
+});
+
+

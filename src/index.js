@@ -66,6 +66,23 @@ io.on('connection', (socket) => {
         io.to(user.room).emit("locationMessage",generateLocationMessage(user.username,`https://google.com/maps?q=${coords.latitude},${coords.longitude}`))
         callback()
     })
+
+
+socket.on('typing', () => {
+    const user = getUser(socket.id);
+    if(user) {
+        socket.broadcast.to(user.room).emit('typing', { user: user.username, isTyping: true });
+    }
+});
+
+socket.on('stopTyping', () => {
+    const user = getUser(socket.id);
+    if(user) {
+        socket.broadcast.to(user.room).emit('stopTyping', { user: user.username, isTyping: false });
+    }
+});
+
+
 })
  
 server.listen(port, () =>
